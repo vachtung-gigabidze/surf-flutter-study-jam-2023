@@ -27,7 +27,7 @@ class TicketStorageCubit extends HydratedCubit<List<Ticket>> {
   Map<String, dynamic>? toJson(List<Ticket> state) {
     final Map<String, dynamic> data = <String, dynamic>{};
     if (state != null) {
-      data['Ticket'] = state.map((v) => v.toJson()).toList();
+      data['ticket'] = state.map((v) => v.toJson()).toList();
     }
     return data;
   }
