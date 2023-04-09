@@ -66,7 +66,7 @@ class _TicketStorageAddButtonState extends State<TicketStorageAddButton> {
                         validate = Uri.parse(controller.text).isAbsolute;
                         if (validate) {
                           context.read<TicketStorageCubit>().addTicket(
-                              Ticket(name: controller.text, url: ""));
+                              Ticket(name: "Ticket1", url: controller.text));
                           Navigator.pop(context);
                         }
                       },

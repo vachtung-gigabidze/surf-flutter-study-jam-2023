@@ -13,7 +13,7 @@ void main() async {
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: kIsWeb
         ? HydratedStorage.webStorageDirectory
-        : await getApplicationDocumentsDirectory(),
+        : await getTemporaryDirectory(),
   );
 
   runApp(const MyApp());
@@ -43,15 +43,8 @@ class _GlobalProviders extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<TicketStorageCubit>.value(value: TicketStorageCubit()),
-
-        // BlocProvider(
-        //   create: (context) =>
-        //       TicketStorageCubit(LocalTicketStorageRepository())..getTicket(),
-        // ),
-      ],
+    return BlocProvider(
+      create: (_) => TicketStorageCubit()..getTicket(),
       child: child,
     );
   }
