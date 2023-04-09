@@ -44,9 +44,7 @@ class _GlobalProviders extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<TicketStorageCubit>.value(
-            value: TicketStorageCubit(LocalTicketStorageRepository())
-              ..getTicket()),
+        BlocProvider<TicketStorageCubit>.value(value: TicketStorageCubit()),
 
         // BlocProvider(
         //   create: (context) =>

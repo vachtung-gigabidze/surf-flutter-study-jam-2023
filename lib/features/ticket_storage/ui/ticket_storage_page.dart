@@ -12,33 +12,32 @@ class TicketStoragePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Хранение билетов"),
-      ),
-      body: Builder(builder: (context) {
-        return Stack(children: [
-          BlocBuilder<TicketStorageCubit, TicketStorageState>(
-            builder: (context, state) => state.when(
-              empty: () => const Center(
-                child: Text("Здесь пока ничего нет"),
-              ),
-              loaded: (tickets) => ListView.builder(
-                  physics: const BouncingScrollPhysics(
-                      parent: AlwaysScrollableScrollPhysics()),
-                  itemCount: tickets.length,
-                  itemBuilder: (context, index) {
-                    return TicketStorageComponent(ticket: tickets[index]);
-                  }),
+    return BlocBuilder<TicketStorageCubit, List<Ticket>>(
+      builder: (context, tickets) => Scaffold(
+        appBar: AppBar(
+          title: const Text("Хранение билетов"),
+        ),
+        body: Builder(
+          builder: (context) => Stack(children: [
+            (tickets.isEmpty)
+                ? const Center(
+                    child: Text("Здесь пока ничего нет"),
+                  )
+                : ListView.builder(
+                    physics: const BouncingScrollPhysics(
+                        parent: AlwaysScrollableScrollPhysics()),
+                    itemCount: tickets.length,
+                    itemBuilder: (context, index) {
+                      return TicketStorageComponent(ticket: tickets[index]);
+                    }),
+            const Positioned(
+              right: 10,
+              bottom: 10,
+              child: TicketStorageAddButton(),
             ),
-          ),
-          const Positioned(
-            right: 10,
-            bottom: 10,
-            child: TicketStorageAddButton(),
-          ),
-        ]);
-      }),
+          ]),
+        ),
+      ),
     );
   }
 }

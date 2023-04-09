@@ -3,41 +3,32 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:surf_flutter_study_jam_2023/features/ticket_storage/data/local_ticket_storage_repository.dart';
 import 'package:surf_flutter_study_jam_2023/features/ticket_storage/domain/entities/ticket_entity.dart';
 
-part 'ticket_storage_state.dart';
-part 'ticket_storage_cubit.freezed.dart';
-part 'ticket_storage_cubit.g.dart';
+class TicketStorageCubit extends HydratedCubit<List<Ticket>> {
+  TicketStorageCubit() : super([]);
 
-class TicketStorageCubit extends HydratedCubit<TicketStorageState> {
-  TicketStorageCubit(this.ticketStorageRepository)
-      : super(TicketStorageState.empty());
+  Future<List<Ticket>> getTicket() async {
+    return state;
+  }
 
-  final LocalTicketStorageRepository ticketStorageRepository;
+  addTicket(Ticket ticket) async {
+    state.add(ticket);
+    emit(state);
+  }
 
-  Future<void> getTicket() async {
-    try {
-      final List<Ticket> tickets = await ticketStorageRepository.getTicket();
-      emit(TicketStorageState.loaded(tickets));
-    } catch (error, st) {
-      emit(TicketStorageState.loaded([]));
-      addError(error, st);
+  @override
+  List<Ticket> fromJson(Map<String, dynamic> json) {
+    final state = (json as List<dynamic>)
+        .map((e) => Ticket.fromJson(e as Map<String, dynamic>))
+        .toList();
+    return state;
+  }
+
+  @override
+  Map<String, dynamic>? toJson(List<Ticket> state) {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (state != null) {
+      data['Ticket'] = state.map((v) => v.toJson()).toList();
     }
-  }
-
-  @override
-  TicketStorageState? fromJson(Map<String, dynamic> json) {
-    final state = TicketStorageState.fromJson(json);
-    return state.whenOrNull(
-      loaded: (tickets) => TicketStorageState.loaded(tickets),
-    );
-  }
-
-  @override
-  Map<String, dynamic>? toJson(TicketStorageState state) {
-    return state
-            .whenOrNull(
-              loaded: (tickets) => TicketStorageState.loaded(tickets),
-            )
-            ?.toJson() ??
-        TicketStorageState.empty().toJson();
+    return data;
   }
 }
