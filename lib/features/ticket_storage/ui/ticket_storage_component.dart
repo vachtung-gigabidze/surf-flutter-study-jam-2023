@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:surf_flutter_study_jam_2023/features/ticket_storage/domain/entities/ticket_entity.dart';
 
@@ -13,10 +14,35 @@ class TicketStorageComponent extends StatefulWidget {
 class _TicketStorageComponentState extends State<TicketStorageComponent>
     with TickerProviderStateMixin {
   late AnimationController controller;
-  bool determinate = false;
+  bool isDownload = false;
+  String downloadMessage = "";
+
+  final dio = Dio();
+  final cancelToken = CancelToken();
+
+  Future download(Dio dio, String url, savePath) async {
+    try {
+      await dio.download(
+        url,
+        savePath,
+        onReceiveProgress: showDownloadProgress,
+        cancelToken: cancelToken,
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void showDownloadProgress(received, total) {
+    if (total != -1) {
+      print((received / total * 100).toStringAsFixed(0) + '%');
+    }
+  }
 
   @override
   void initState() {
+    dio.interceptors.add(LogInterceptor());
+
     controller = AnimationController(
       /// [AnimationController]s can be created with `vsync: this` because of
       /// [TickerProviderStateMixin].

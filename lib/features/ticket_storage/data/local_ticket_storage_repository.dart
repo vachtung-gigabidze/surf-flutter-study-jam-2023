@@ -10,9 +10,8 @@ class LocalTicketStorageRepository implements TicketStorageRepository {
   ];
 
   @override
-  Future<void> addTicket(Ticket ticket) {
+  addTicket(Ticket ticket) {
     tickets.add(ticket);
-    return Future(() => null);
   }
 
   @override
