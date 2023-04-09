@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:surf_flutter_study_jam_2023/features/ticket_storage/ticket_storage_page.dart';
+import 'package:surf_flutter_study_jam_2023/features/ticket_storage/ui/ticket_storage_page.dart';
 
 void main() {
   runApp(const MyApp());
