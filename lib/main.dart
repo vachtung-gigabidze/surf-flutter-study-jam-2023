@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Surf flutter study jam 2023',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          primarySwatch: Colors.deepOrange,
         ),
         home: const TicketStoragePage(),
       ),

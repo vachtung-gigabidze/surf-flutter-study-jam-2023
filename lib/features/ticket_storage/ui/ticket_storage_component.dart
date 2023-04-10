@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:surf_flutter_study_jam_2023/features/ticket_storage/domain/entities/ticket_entity.dart';
+import 'package:surf_flutter_study_jam_2023/features/ticket_storage/domain/ticket_storage_state/ticket_storage_cubit.dart';
 
 //Компонент “Билет”
 class TicketStorageComponent extends StatefulWidget {
@@ -29,14 +31,16 @@ class _TicketStorageComponentState extends State<TicketStorageComponent>
         cancelToken: cancelToken,
       );
     } catch (e) {
-      print(e);
+      final snackBar = SnackBar(content: Text(e.toString()));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 
-  void showDownloadProgress(received, total) {
+  String showDownloadProgress(received, total) {
     if (total != -1) {
-      print((received / total * 100).toStringAsFixed(0) + '%');
+      return '${(received / total * 100).toStringAsFixed(0)}%';
     }
+    return "Ожидается начала загрузки";
   }
 
   @override
@@ -104,6 +108,22 @@ class _TicketStorageComponentState extends State<TicketStorageComponent>
             onPressed: () {},
             icon: const Icon(
               Icons.cloud_download_outlined,
+              size: 34,
+            ),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(
+              Icons.pause_circle_outline_outlined,
+              size: 34,
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              context.read<TicketStorageCubit>().removeTicket(widget.ticket);
+            },
+            icon: const Icon(
+              Icons.delete_outline,
               size: 34,
             ),
           ),

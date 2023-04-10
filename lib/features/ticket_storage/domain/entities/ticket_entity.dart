@@ -7,11 +7,13 @@ part 'ticket_entity.g.dart';
 @JsonSerializable()
 class Ticket extends Equatable {
   const Ticket(
-      {required this.name,
+      {required this.id,
+      required this.name,
       this.pathFile = "",
       required this.url,
       this.ticketType = TicketType.air});
 
+  final int id;
   final String name;
   final String pathFile;
   final String url;

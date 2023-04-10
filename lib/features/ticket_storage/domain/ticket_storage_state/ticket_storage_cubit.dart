@@ -9,12 +9,16 @@ part 'ticket_storage_cubit.g.dart';
 class TicketStorageCubit extends HydratedCubit<TicketStorageState> {
   TicketStorageCubit() : super(TicketStorageState([]));
 
-  Future<List<Ticket>> getTicket() async {
+  List<Ticket> getTicket() {
     return state.tickets;
   }
 
   addTicket(Ticket ticket) {
     emit(state.copyWith(tickets: [...state.tickets]..add(ticket)));
+  }
+
+  removeTicket(Ticket ticket) {
+    emit(state.copyWith(tickets: [...state.tickets]..remove(ticket)));
   }
 
   @override

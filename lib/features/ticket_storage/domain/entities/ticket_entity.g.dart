@@ -7,6 +7,7 @@ part of 'ticket_entity.dart';
 // **************************************************************************
 
 Ticket _$TicketFromJson(Map<String, dynamic> json) => Ticket(
+      id: json['id'] as int,
       name: json['name'] as String,
       pathFile: json['pathFile'] as String? ?? "",
       url: json['url'] as String,
@@ -16,6 +17,7 @@ Ticket _$TicketFromJson(Map<String, dynamic> json) => Ticket(
     );
 
 Map<String, dynamic> _$TicketToJson(Ticket instance) => <String, dynamic>{
+      'id': instance.id,
       'name': instance.name,
       'pathFile': instance.pathFile,
       'url': instance.url,
