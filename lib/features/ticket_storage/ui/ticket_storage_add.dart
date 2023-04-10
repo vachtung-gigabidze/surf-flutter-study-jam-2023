@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:surf_flutter_study_jam_2023/features/ticket_storage/domain/entities/ticket_entity.dart';
-import 'package:surf_flutter_study_jam_2023/features/ticket_storage/domain/ticke_storage_state/ticket_storage_cubit.dart';
+import 'package:surf_flutter_study_jam_2023/features/ticket_storage/domain/ticket_storage_state/ticket_storage_cubit.dart';
 
 class TicketStorageAddButton extends StatefulWidget {
   const TicketStorageAddButton({
@@ -64,11 +64,11 @@ class _TicketStorageAddButtonState extends State<TicketStorageAddButton> {
                       backgroundColor: Colors.grey,
                       onPressed: () {
                         validate = Uri.parse(controller.text).isAbsolute;
-                        if (validate) {
-                          context.read<TicketStorageCubit>().addTicket(
-                              Ticket(name: "Ticket1", url: controller.text));
-                          Navigator.pop(context);
-                        }
+                        // if (validate) {
+                        context.read<TicketStorageCubit>().addTicket(
+                            Ticket(name: "Ticket1", url: controller.text));
+                        Navigator.pop(context);
+                        // }
                       },
                     ),
                   ],
