@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:surf_flutter_study_jam_2023/features/ticket_storage/domain/entities/ticket_entity.dart';
 import 'package:surf_flutter_study_jam_2023/features/ticket_storage/domain/ticket_storage_state/ticket_storage_cubit.dart';
 
@@ -33,6 +36,30 @@ class _TicketStorageComponentState extends State<TicketStorageComponent>
     } catch (e) {
       final snackBar = SnackBar(content: Text(e.toString()));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
+  Future download2(Dio dio, String url, String savePath) async {
+    try {
+      Response response = await dio.get(
+        url,
+        onReceiveProgress: showDownloadProgress,
+        //Received data with List<int>
+        options: Options(
+            responseType: ResponseType.bytes,
+            followRedirects: false,
+            validateStatus: (status) {
+              return status! < 500;
+            }),
+      );
+      //print(response.headers);
+      File file = File(savePath);
+      var raf = file.openSync(mode: FileMode.write);
+      // response.data is List<int> type
+      raf.writeFromSync(response.data);
+      await raf.close();
+    } catch (e) {
+      //print(e);
     }
   }
 
@@ -105,14 +132,24 @@ class _TicketStorageComponentState extends State<TicketStorageComponent>
             width: 20,
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () async {
+              var tempDir = await getTemporaryDirectory();
+              String fullPath = tempDir.path + "/magazine2.pdf";
+              // print('full path ${fullPath}');
+
+              download(dio, widget.ticket.url, fullPath);
+            },
             icon: const Icon(
               Icons.cloud_download_outlined,
               size: 34,
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              if (!cancelToken.isCancelled) {
+                cancelToken.cancel();
+              }
+            },
             icon: const Icon(
               Icons.pause_circle_outline_outlined,
               size: 34,

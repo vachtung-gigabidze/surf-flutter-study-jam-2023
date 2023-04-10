@@ -22,6 +22,14 @@ class _TicketStorageAddButtonState extends State<TicketStorageAddButton> {
     super.dispose();
   }
 
+  static bool isUrlPdfValid(String url) {
+    final data = url.toLowerCase();
+    final isValidUrl = Uri.tryParse(data)?.isAbsolute;
+    final hasHttps = data.startsWith("https://");
+    final hasPdf = data.endsWith(".pdf");
+    return isValidUrl == true && hasHttps && hasPdf;
+  }
+
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
@@ -63,16 +71,15 @@ class _TicketStorageAddButtonState extends State<TicketStorageAddButton> {
                       label: const Text('Добавить'),
                       backgroundColor: Colors.grey,
                       onPressed: () {
-                        validate = Uri.parse(controller.text).isAbsolute;
-                        // if (validate) {
-                        TicketStorageCubit state =
-                            context.read<TicketStorageCubit>();
-                        state.addTicket(Ticket(
-                            id: state.getTicket().length + 1,
-                            name: "Ticket${state.getTicket().length + 1}",
-                            url: controller.text));
-                        Navigator.pop(context);
-                        // }
+                        if (isUrlPdfValid(controller.text)) {
+                          TicketStorageCubit state =
+                              context.read<TicketStorageCubit>();
+                          state.addTicket(Ticket(
+                              id: state.getTicket().length + 1,
+                              name: "Ticket${state.getTicket().length + 1}",
+                              url: controller.text));
+                          Navigator.pop(context);
+                        }
                       },
                     ),
                   ],
