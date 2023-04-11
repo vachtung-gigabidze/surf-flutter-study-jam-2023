@@ -14,7 +14,15 @@ class TicketStorageAddButton extends StatefulWidget {
 
 class _TicketStorageAddButtonState extends State<TicketStorageAddButton> {
   TextEditingController controller = TextEditingController();
-  bool validate = false;
+  bool validate = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller.text =
+        "https://journal-free.ru/download/dachnye-sekrety-11-noiabr-2019.pdf";
+  }
 
   @override
   void dispose() {

@@ -20,7 +20,8 @@ class _TicketStorageComponentState extends State<TicketStorageComponent>
     with TickerProviderStateMixin {
   late AnimationController controller;
   bool isDownload = false;
-  String downloadMessage = "";
+  String downloadMessage = "Ожидается начала загрузки";
+  final ValueNotifier<double> progressStatus = ValueNotifier<double>(.0);
 
   final dio = Dio();
   final cancelToken = CancelToken();
@@ -31,6 +32,12 @@ class _TicketStorageComponentState extends State<TicketStorageComponent>
         url,
         savePath,
         onReceiveProgress: showDownloadProgress,
+        options: Options(
+            responseType: ResponseType.bytes,
+            followRedirects: false,
+            validateStatus: (status) {
+              return status! < 500;
+            }),
         cancelToken: cancelToken,
       );
     } catch (e) {
@@ -63,11 +70,13 @@ class _TicketStorageComponentState extends State<TicketStorageComponent>
     }
   }
 
-  String showDownloadProgress(received, total) {
+  void showDownloadProgress(received, total) {
     if (total != -1) {
-      return '${(received / total * 100).toStringAsFixed(0)}%';
+      downloadMessage = '${(received / total * 100).toStringAsFixed(0)}%';
+    } else {
+      downloadMessage = "Ожидается начала загрузки";
     }
-    return "Ожидается начала загрузки";
+    setState(() {});
   }
 
   @override
@@ -100,29 +109,30 @@ class _TicketStorageComponentState extends State<TicketStorageComponent>
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          const SizedBox(width: 20),
           Icon(
             widget.ticket.ticketType == TicketType.air
                 ? Icons.airplane_ticket_outlined
                 : Icons.train_sharp,
             size: 34,
           ),
-          const SizedBox(
-            width: 20,
-          ),
+          const SizedBox(width: 10),
           Expanded(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
                   widget.ticket.name,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 10),
-                LinearProgressIndicator(
-                  value: controller.value,
-                  semanticsLabel: 'Linear progress indicator',
+                ValueListenableBuilder<double>(
+                  valueListenable: progressStatus,
+                  builder: (_, value, __) =>
+                      LinearProgressIndicator(value: value),
                 ),
-                const Text(
-                  "Ожидается начала загрузки",
+                Text(
+                  downloadMessage,
                 ),
                 const SizedBox(height: 10),
               ],
