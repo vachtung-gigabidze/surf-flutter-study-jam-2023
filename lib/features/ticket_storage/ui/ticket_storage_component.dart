@@ -20,8 +20,9 @@ class _TicketStorageComponentState extends State<TicketStorageComponent>
     with TickerProviderStateMixin {
   late AnimationController controller;
   bool isDownload = false;
-  String downloadMessage = "Ожидается начала загрузки";
-  final ValueNotifier<double> progressStatus = ValueNotifier<double>(.0);
+  ValueNotifier<String> progressMessage =
+      ValueNotifier<String>("Ожидается начала загрузки");
+  ValueNotifier<double> progressStatus = ValueNotifier<double>(.0);
 
   final dio = Dio();
   final cancelToken = CancelToken();
@@ -51,8 +52,10 @@ class _TicketStorageComponentState extends State<TicketStorageComponent>
       Response response = await dio.get(
         url,
         onReceiveProgress: showDownloadProgress,
+
         //Received data with List<int>
         options: Options(
+            receiveTimeout: const Duration(seconds: 1),
             responseType: ResponseType.bytes,
             followRedirects: false,
             validateStatus: (status) {
@@ -70,34 +73,37 @@ class _TicketStorageComponentState extends State<TicketStorageComponent>
     }
   }
 
-  void showDownloadProgress(received, total) {
+  void showDownloadProgress(received, total) async {
     if (total != -1) {
-      downloadMessage = '${(received / total * 100).toStringAsFixed(0)}%';
+      progressStatus.value = (received / total);
+      progressMessage.value =
+          'Загрузка ${(received / 1048576).toStringAsFixed(2)} из ${(total / 1048576).toStringAsFixed(2)} Мбайт';
     } else {
-      downloadMessage = "Ожидается начала загрузки";
+      progressMessage.value = "Ожидается начала загрузки";
     }
-    setState(() {});
+    await Future.delayed(const Duration(seconds: 1));
+    //setState(() {});
   }
 
   @override
   void initState() {
     dio.interceptors.add(LogInterceptor());
 
-    controller = AnimationController(
-      /// [AnimationController]s can be created with `vsync: this` because of
-      /// [TickerProviderStateMixin].
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    )..addListener(() {
-        setState(() {});
-      });
-    controller.stop();
+    // controller = AnimationController(
+    //   /// [AnimationController]s can be created with `vsync: this` because of
+    //   /// [TickerProviderStateMixin].
+    //   vsync: this,
+    //   duration: const Duration(seconds: 2),
+    // )..addListener(() {
+    //     setState(() {});
+    //   });
+    // controller.stop();
     super.initState();
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    // controller.dispose();
     super.dispose();
   }
 
@@ -127,13 +133,12 @@ class _TicketStorageComponentState extends State<TicketStorageComponent>
                   overflow: TextOverflow.ellipsis,
                 ),
                 ValueListenableBuilder<double>(
-                  valueListenable: progressStatus,
-                  builder: (_, value, __) =>
-                      LinearProgressIndicator(value: value),
-                ),
-                Text(
-                  downloadMessage,
-                ),
+                    valueListenable: progressStatus,
+                    builder: (_, value, __) =>
+                        LinearProgressIndicator(value: value)),
+                ValueListenableBuilder<String>(
+                    valueListenable: progressMessage,
+                    builder: (_, value, __) => Text(value)),
                 const SizedBox(height: 10),
               ],
             ),
