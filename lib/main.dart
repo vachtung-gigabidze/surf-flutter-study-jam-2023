@@ -28,7 +28,30 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Surf flutter study jam 2023',
         theme: ThemeData(
-          primarySwatch: Colors.deepOrange,
+          primarySwatch: Colors.blue,
+          useMaterial3: true,
+          textTheme: const TextTheme().copyWith(
+            titleMedium: const TextStyle(
+              color: Color.fromARGB(255, 108, 86, 167),
+            ),
+            titleSmall: const TextStyle(
+              color: Color.fromARGB(255, 137, 132, 141),
+            ),
+          ),
+          iconButtonTheme: const IconButtonThemeData(
+            style: ButtonStyle(
+              iconColor: MaterialStatePropertyAll<Color>(
+                Color.fromARGB(255, 108, 86, 167),
+              ),
+            ),
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 108, 86, 167),
+              foregroundColor: Colors.white,
+              elevation: 0,
+            ),
+          ),
         ),
         home: const TicketStoragePage(),
       ),
